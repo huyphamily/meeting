@@ -4,7 +4,8 @@
 
 'use strict';
 
-var _ = require('lodash')
+var _ = require('lodash');
+var shortid = require('shortid');
 
 var meetingManager = {};
 var rooms = {};
@@ -27,7 +28,7 @@ meetingManager.joinRoom = function(socket, clientCallback, userName, roomName, s
 * if room does not exist, this will create the room and add the user to it
 */
 function createRoom(socket, clientCallback, userName, roomName, socketCallback) {
-  roomName = roomName || Math.floor( Math.random() * 100000000 );
+  roomName = roomName || shortid.generate();
   var currentRoom = rooms[roomName] = {};
   userName = userName || createUsername(roomName);
   currentRoom[userName] = socket;
