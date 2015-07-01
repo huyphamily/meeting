@@ -82,11 +82,26 @@ function createUsername(roomName) {
 meetingManager.handleMsg = function(socket, data, userName, roomName) {
   var to = data.to;
   var currentRoom = rooms[roomName];
-  if (currentRoom && currentRoom[to]) {
+  if ( currentRoom && currentRoom[to] ) {
     rooms[currentRoom][to].emit('msg', data);
   } else {
     socket.emit('error:msg');
   }
+};
+
+/**
+* Leave Room
+* remove a user from a room and tell all peers of user disconnect
+*/
+meetingManager.leaveRoom = function(userName, roomName) {
+  var currentRoom = rooms[roomName];
+  if ( !roomName || !currentRoom ) {
+    return;
+  }
+  delete currentRoom[userName];
+  _.each(currentRoom, function(s) {
+    s.emit('peer.disconnected', {user: userName});
+  });
 };
 
 module.exports = meetingManager;
