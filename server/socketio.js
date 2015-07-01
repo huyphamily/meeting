@@ -13,10 +13,18 @@ function onDisconnect(socket) {
 
 // When the user connects.. perform this
 function onConnect(socket) {
+  var currentRoom, userName;
 
   socket.on('join', function(data, fn) {
     data = data || {};
-    meetingManager.joinRoom(socket, fn, data.user, data.room);
+    meetingManager.joinRoom(socket, fn, data.user, data.room, function(name, room) {
+      userName = name;
+      currentRoom = room;
+    });
+  });
+
+  socket.on('msg', function(data) {
+    meetingManager.handleMsg(socket, data, userName, currentRoom);
   });
 }
 
